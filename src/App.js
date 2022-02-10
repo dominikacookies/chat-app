@@ -6,6 +6,8 @@ import { AuthProvider } from "./contexts/AuthContext";
 
 import Chats from "./components/Chats";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Homepage from "./pages/Homepage";
 
 function App() {
   return (
@@ -14,7 +16,9 @@ function App() {
         <AuthProvider>
           <Switch>
             <Route path="/chats" component={Chats} />
-            <Route path="/" component={Login} />
+            <Route path="/login" component={Login} />
+            <Route path="/signup" component={Signup} />
+            <Route path="/" component={Homepage} />
           </Switch>
         </AuthProvider>
       </Router>
