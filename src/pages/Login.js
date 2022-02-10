@@ -1,8 +1,5 @@
 import React from "react";
-import { GoogleOutlined } from "@ant-design/icons";
-import firebase from "firebase/app";
 
-import { auth } from "../firebase";
 import LoginForm from "../components/LoginForm";
 
 const Login = () => {
@@ -11,7 +8,11 @@ const Login = () => {
       <div id="login-card">
         <h2>Welcome to the Chat</h2>
         <LoginForm />
-        <br /> <br />
+        <br />
+        <div className="text-center my-2">Don't have an account?</div>
+        <a className="signup-link" href="/signup">
+          Sign Up
+        </a>
       </div>
     </div>
   );
