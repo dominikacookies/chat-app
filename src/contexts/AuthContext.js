@@ -13,14 +13,16 @@ export const AuthProvider = ({ children }) => {
   const history = useHistory();
 
   useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      setUser(user);
-      setLoading(false);
-      if (user) history.push("/chats");
-    });
+    if (!user) {
+      auth.onAuthStateChanged((user) => {
+        setUser(user);
+        setLoading(false);
+        if (user) history.push("/chats");
+      });
+    }
   }, [user, history]);
 
-  const value = { user };
+  const value = { user, setUser };
 
   return (
     <AuthContext.Provider value={value}>
