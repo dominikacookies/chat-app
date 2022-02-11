@@ -1,0 +1,20 @@
+#signup-page {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background-color: rgb(31, 31, 31);
+}
+
+#signup-card {
+  position: relative;
+  top: calc(50vh - 144px);
+  left: calc(50vw - 210px);
+  padding-top: 36px;
+  padding-bottom: 66px;
+  width: 42rem;
+  text-align: center;
+  background-color: rgb(236, 236, 232);
+  border-radius: 5rem;
+}
