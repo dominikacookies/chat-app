@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import FormInput from "./FormInput";
-import { useAuth } from "../contexts/AuthContext";
+import FormInput from "../FormInput";
+import { useAuth } from "../../contexts/AuthContext";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
-import ImageUpload from "./ImageUpload";
+import ImageUpload from "../ImageUpload/ImageUpload";
+import {
+  generateSignUpFormData,
+  createNewUserRequest,
+} from "../../utils/userCreationUtils";
+
+import "./signupForm.css";
 
 const SignupFrom = () => {
   const {
@@ -23,37 +27,22 @@ const SignupFrom = () => {
   const history = useHistory();
   const { setUser } = useAuth();
   const [imageUrl, setImageUrl] = useState();
-  const id = uuidv4();
-
-  const getFile = async (url) => {
-    const response = await fetch(url);
-    const data = await response.blob();
-
-    return new File([data], "userPhoto.jpg", { type: "image/jpeg" });
-  };
 
   const onSubmit = async ({ email, username, password }) => {
-    let formData = new FormData();
-    formData.append("email", email);
-    formData.append("username", username);
-    formData.append("secret", password);
+    const formData = await generateSignUpFormData(
+      email,
+      username,
+      password,
+      imageUrl
+    );
 
-    const avatar = await getFile(imageUrl);
-    formData.append("avatar", avatar, avatar.name);
+    const response = await createNewUserRequest(formData);
 
-    try {
-      await axios.post("https://api.chatengine.io/users", formData, {
-        headers: { "private-key": process.env.REACT_APP_CHAT_PRIVATE_KEY },
-      });
-
-      setUser({
-        displayName: username,
-        uid: password,
-      });
-
+    if (response) {
+      setUser({ displayName: username, uid: password });
       history.push("/chats");
-    } catch (error) {
-      setError("User does not exist");
+    } else {
+      //show error
     }
   };
 
@@ -61,7 +50,7 @@ const SignupFrom = () => {
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <section>
-          <ImageUpload id={id} setImageUrl={setImageUrl} imageUrl={imageUrl} />
+          <ImageUpload setImageUrl={setImageUrl} imageUrl={imageUrl} />
           <FormInput
             placeholder="Email"
             error={errors.email}
@@ -80,7 +69,7 @@ const SignupFrom = () => {
           />
         </section>
         <div className="button-block py-3">
-          <button type="submit">Login</button>
+          <button type="submit">Register</button>
         </div>
       </form>
     </div>

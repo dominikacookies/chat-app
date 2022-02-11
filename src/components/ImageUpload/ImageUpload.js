@@ -3,8 +3,11 @@ import { EditFilled, CameraFilled, DeleteFilled } from "@ant-design/icons";
 import { useState } from "react";
 import S3 from "react-aws-s3";
 import ImageUploading from "react-images-uploading";
+import { v4 as uuidv4 } from "uuid";
 
-const ImageUpload = ({ id, setImageUrl, imageUrl }) => {
+import "./imageUpload.css";
+
+const ImageUpload = ({ setImageUrl, imageUrl }) => {
   const [images, setImages] = useState([]);
 
   const onChange = (imageList) => {
@@ -13,7 +16,7 @@ const ImageUpload = ({ id, setImageUrl, imageUrl }) => {
 
   const onUpload = async () => {
     const file = images[0].file;
-    const fileName = `${id}/images/profile/${file.name}`;
+    const fileName = `${uuidv4()}/images/profile/${file.name}`;
 
     const config = {
       bucketName: process.env.REACT_APP_BUCKET_NAME,
@@ -22,17 +25,14 @@ const ImageUpload = ({ id, setImageUrl, imageUrl }) => {
       secretAccessKey: process.env.REACT_APP_ACCESS_KEY,
     };
 
-    try {
-      const ReactS3Client = new S3(config);
-      const s3Data = await ReactS3Client.uploadFile(file, fileName);
-      if (s3Data.status === 204) {
-        setImageUrl(s3Data.location);
-        setImages([]);
-      } else {
-        console.log("Failed to upload image");
-      }
-    } catch (error) {
-      console.log("error", error);
+    const ReactS3Client = new S3(config);
+    const s3Data = await ReactS3Client.uploadFile(file, fileName);
+    if (s3Data.status === 204) {
+      setImageUrl(s3Data.location);
+      setImages([]);
+    } else {
+      //TODO: append err msg if failed
+      console.error("Failed to upload image");
     }
   };
 
@@ -57,13 +57,13 @@ const ImageUpload = ({ id, setImageUrl, imageUrl }) => {
 
               {imageList.length !== 0 && (
                 <div className="d-flex gap-2 justify-content-center px-3">
-                  <button className="logo-button" onClick={onImageRemoveAll}>
+                  <button className="icon-button" onClick={onImageRemoveAll}>
                     <span className="upload-logo">
                       <DeleteFilled size="1.5rem" />
                     </span>
                   </button>
 
-                  <button className="logo-button" onClick={onImageUpload}>
+                  <button className="icon-button" onClick={onImageUpload}>
                     <span className="upload-logo">
                       <EditFilled size="1.5rem" />
                     </span>
